@@ -1,4 +1,4 @@
-Sonic Signatures: An Analysis of Spotify's Audio Features and their Correlation with Chart Popularity
+#Sonic Signatures: An Analysis of Spotify's Audio Features and their Correlation with Chart Popularity
 
 INTRODUCTION
 

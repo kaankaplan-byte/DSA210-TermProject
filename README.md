@@ -1,72 +1,71 @@
 KAAN KAPLAN 31946 SECTION D
 
-# Sonic Signatures: An Analysis of Spotify's Audio Features and their Correlation with Chart Popularity
+# Sonic Signatures: An Analysis of Apple Music's Audio Features and their Correlation with Chart Popularity
 
 #### INTRODUCTION
 
-In the modern music industry, streaming platforms like Spotify are the dominant force. These platforms not only distribute music but also quantify it, assigning every track a set of "audio features." This creates a unique opportunity to study music with objective data. However, the relationship between these quantitative features (like energy, danceability, valence) and a song's actual commercial success remains a complex and interesting question.
+In the modern music industry, streaming platforms like Apple Music are a dominant force. These platforms not only distribute music but also meticulously categorize it, assigning every track a rich set of metadata (like genre, release date, duration). This creates a unique opportunity to study music with objective data. However, the relationship between this metadata and a song's actual commercial success remains a complex and interesting question.
 
-This project intends to investigate the measurable sonic properties of music to determine if there are significant correlations between a song's audio profile and its performance on Spotify's influential charts.
+This project intends to investigate the measurable properties of music on Apple Music to determine if there are significant correlations between a song's metadata and its performance on Apple Music's influential charts.
 
 #### OBJECTIVES
 
-- To quantify and analyze the distributions of core audio features (e.g., valence, energy, acousticness) for songs appearing on major Spotify playlists.
+- To quantify and analyze the distributions of core metadata (e.g., genre, durationInMillis, releaseDate) for songs appearing on major Apple Music charts.
 
-- To evaluate the statistical relationship between these audio features and Spotify's internal popularity metric.
+- To evaluate the statistical relationship between these metadata features and a song's position on the charts.
 
-- To compare the mean audio feature profiles of different chart types (e.g., "Global Top 50" vs. "Global Viral 50") to identify distinct sonic characteristics.
+- To compare the genre distribution and average song duration of different chart types (e.g., "Top Songs: Global" vs. "Top Songs: USA") to identify distinct characteristics.
 
-- To offer data-driven insights into the audio-feature combinations that are most common in high-performing tracks.
+- To offer data-driven insights into the metadata combinations (e.g., genre + duration) that are most common in high-performing tracks.
 
 #### DATA SOURCES
 
-Data will be sourced exclusively and programmatically from the Spotify Web API.
+Data will be sourced exclusively and programmatically from the Apple Music API.
 
-**Playlist Endpoints:** To retrieve the complete list of track IDs from curated charts, specifically the "Global Top 50" (play-driven) and "Global Viral 50" (share-driven).
+**Charts Endpoint:** To retrieve the complete list of track IDs from curated charts, specifically the "Top Songs: Global" chart.
 
-**Track Endpoints:** To gather track-specific metadata, including artist, name, and the popularity metric.
-
-**Audio Features Endpoint:** To obtain the detailed quantitative audio feature data for each track ID.
+**Catalog Endpoints:** To gather track-specific metadata, including artist, name, genreNames, durationInMillis, and releaseDate.
 
 #### METHODOLOGY
 
 **1-Data Collection:**
 
-An automated Python script will be developed using the spotipy library.
-The script will authenticate with the Spotify API using Client Credentials.
-It will fetch all tracks from the target playlists, extract their unique IDs, and then query the API for the corresponding audio features.
-The consolidated data (track info, popularity, and features) will be compiled into a single Pandas DataFrame and saved as spotify_data.csv to ensure the analysis is reproducible.
+An automated Python script will be developed using libraries like requests and PyJWT.
+The script will authenticate with the Apple Music API using a private key and developer token.
+It will fetch all tracks from the target charts, extract their unique IDs, and then query the API for the corresponding catalog metadata.
+The consolidated data (track info, chart position, genre, duration, release date) will be compiled into a single Pandas DataFrame and saved as apple_music_data.csv to ensure the analysis is reproducible.
 
 **2-Data Processing:**
 
-The raw data will be cleaned to handle any missing values or duplicates.
-A 'playlist_source' (e.g., 'Top 50', 'Viral 50') feature will be created to label each track.
-The distributions of key audio features will be examined.
+The raw data will be cleaned. durationInMillis will be converted to seconds.
+A chart_position feature will be used as a proxy for popularity.
+The genreNames array will be processed to analyze primary and secondary genres.
 
 **3-Descriptive Statistics:**
 
-Mean, median, mode, and standard deviation will be calculated for all continuous audio features (e.g., danceability, energy) across the entire dataset and for each playlist sub-group.
+Mean, median, and standard deviation will be calculated for durationInMillis.
+Frequency distributions for genreNames will be calculated and visualized (e.g., bar chart).
 
 **4-Correlation Analysis:**
 
-A Pearson correlation matrix will be generated to measure the linear relationships between all continuous audio features and the popularity score. This will be visualized using a heatmap.
+A correlation analysis will be generated to measure the relationship between durationInMillis or releaseDate and chart_position.
 
 **5-Hypothesis Testing:**
 
-An independent two-sample t-test will be used to compare the mean feature values of the two playlists.
-Null Hypothesis (H0): There is no statistically significant difference in the mean valence (or other selected features) between songs on the 'Global Top 50' and songs on the 'Global Viral 50'.
-Alternative Hypothesis (H1): A statistically significant difference exists in the mean valence (or other features) between the two chart types.
+A Chi-square test could be used to see if the genre distribution on one chart (e.g., 'Global') is significantly different from another (e.g., 'USA').
+**Null Hypothesis:** There is no statistically significant difference in the mean durationInMillis between songs in the Top 10 and songs in the 50-100 range.
+**Alternative Hypothesis:** A statistically significant difference exists in the mean durationInMillis based on chart position.
 
 **6-Interpretation and Perspectives:**
 
-The results will be interpreted to determine which sonic features, if any, are most strongly associated with popularity.
-The analysis will explore whether different types of popularity (play-driven vs. share-driven) correspond to different "sonic signatures."
+The results will be interpreted to determine which metadata features, if any, are most strongly associated with high chart performance.
+The analysis will explore whether 'hit' songs have an 'optimal' duration or are dominated by specific genres.
 
 #### EXPECTED OUTCOMES
 
-A high-quality, clean dataset of popular songs and their audio features, ready for analysis.
-Statistically-backed findings on the audio features that are most (and least) correlated with a song's popularity score.
-A clear, comparative analysis defining the "typical" audio profile of songs on the 'Global Top 50' versus the 'Global Viral 50'.
-A final report and/or Jupyter Notebook with visualizations (histograms, boxplots, heatmaps) that communicate the project's findings.
+A high-quality, clean dataset of popular songs from Apple Music and their metadata, ready for analysis.
+Statistically-backed findings on the genres that are most correlated with chart success.
+A clear, comparative analysis defining the "typical" metadata profile of a hit song on Apple Music.
+A final report and/or Jupyter Notebook with visualizations (bar charts, histograms, scatter plots) that communicate the project's findings.
 
 

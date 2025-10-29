@@ -1,71 +1,69 @@
-KAAN KAPLAN 31946 SECTION D
+ KAAN KAPLAN 31946 SECTION D
 
-# Sonic Signatures: An Analysis of Apple Music's Audio Features and their Correlation with Chart Popularity
+# Cinematic Signatures: An Analysis of Movie Metadata and its Correlation with Popularity
 
 #### INTRODUCTION
 
-In the modern music industry, streaming platforms like Apple Music are a dominant force. These platforms not only distribute music but also meticulously categorize it, assigning every track a rich set of metadata (like genre, release date, duration). This creates a unique opportunity to study music with objective data. However, the relationship between this metadata and a song's actual commercial success remains a complex and interesting question.
+In the modern film industry, data aggregators like **The Movie Database (TMDb)** are a dominant force. These platforms not only catalog films but also meticulously categorize them, assigning every title a rich set of metadata (like genre, release date, runtime, and user scores). This creates a unique opportunity to study films with objective data. However, the relationship between this metadata and a movie's actual commercial success or popular reception remains a complex and interesting question.
 
-This project intends to investigate the measurable properties of music on Apple Music to determine if there are significant correlations between a song's metadata and its performance on Apple Music's influential charts.
+This project intends to investigate the measurable properties of movies on TMDb to determine if there are significant correlations between a film's metadata and its performance metrics (like popularity score and user ratings).
 
 #### OBJECTIVES
 
-- To quantify and analyze the distributions of core metadata (e.g., genre, durationInMillis, releaseDate) for songs appearing on major Apple Music charts.
+- To quantify and analyze the distributions of core metadata (e.g., genre, runtime, release_date) for movies appearing on major TMDb lists.
 
-- To evaluate the statistical relationship between these metadata features and a song's position on the charts.
+- To evaluate the statistical relationship between these metadata features and a movie's popularity score and vote_average.
 
-- To compare the genre distribution and average song duration of different chart types (e.g., "Top Songs: Global" vs. "Top Songs: USA") to identify distinct characteristics.
+- To compare the genre distribution and average runtime of different movie lists (e.g., "Popular" vs. "Top Rated") to identify distinct characteristics.
 
-- To offer data-driven insights into the metadata combinations (e.g., genre + duration) that are most common in high-performing tracks.
+- To offer data-driven insights into the metadata combinations (e.g., genre + runtime) that are most common in high-performing films.
 
 #### DATA SOURCES
 
-Data will be sourced exclusively and programmatically from the Apple Music API.
+Data will be sourced exclusively and programmatically from **The Movie Database (TMDb) API**.
 
-**Charts Endpoint:** To retrieve the complete list of track IDs from curated charts, specifically the "Top Songs: Global" chart.
+- **List Endpoints:** To retrieve the complete list of movie IDs from curated lists, specifically the "/movie/popular" and "/movie/top_rated" charts.
 
-**Catalog Endpoints:** To gather track-specific metadata, including artist, name, genreNames, durationInMillis, and releaseDate.
+- **Movie Details Endpoint:** To gather movie-specific metadata, including title, genres, runtime, release_date, popularity, and vote_average.
 
 #### METHODOLOGY
 
-**1-Data Collection:**
+**1. Data Collection:**
 
-An automated Python script will be developed using libraries like requests and PyJWT.
-The script will authenticate with the Apple Music API using a private key and developer token.
-It will fetch all tracks from the target charts, extract their unique IDs, and then query the API for the corresponding catalog metadata.
-The consolidated data (track info, chart position, genre, duration, release date) will be compiled into a single Pandas DataFrame and saved as apple_music_data.csv to ensure the analysis is reproducible.
+- An automated Python script will be developed using the "requests" library.
+- The script will authenticate with the TMDb API using a simple API key.
+- It will fetch all movies from the target lists, extract their unique IDs, and then query the API for the corresponding detailed metadata.
+- The consolidated data (movie info, popularity, genres, runtime, release date) will be compiled into a single Pandas DataFrame and saved as tmdb_movie_data.csv to ensure the analysis is reproducible.
 
-**2-Data Processing:**
+**2. Data Processing:**
 
-The raw data will be cleaned. durationInMillis will be converted to seconds.
-A chart_position feature will be used as a proxy for popularity.
-The genreNames array will be processed to analyze primary and secondary genres.
+- The raw data will be cleaned. The runtime is already in minutes and suitable for direct analysis.
+- popularity and vote_average will be used as the primary proxies for success.
+- The genres list (an array of objects) will be processed to extract the primary and secondary genres for analysis.
 
-**3-Descriptive Statistics:**
+**3. Descriptive Statistics:**
 
-Mean, median, and standard deviation will be calculated for durationInMillis.
-Frequency distributions for genreNames will be calculated and visualized (e.g., bar chart).
+- Mean, median, and standard deviation will be calculated for runtime, popularity, and vote_average.
+- Frequency distributions for genres will be calculated and visualized (e.g., bar chart).
 
-**4-Correlation Analysis:**
+**4. Correlation Analysis:**
 
-A correlation analysis will be generated to measure the relationship between durationInMillis or releaseDate and chart_position.
+- A correlation heatmap will be generated to measure the relationship between numerical features like runtime, release_date, popularity, and vote_average.
 
-**5-Hypothesis Testing:**
+**5. Hypothesis Testing:**
 
-A Chi-square test could be used to see if the genre distribution on one chart (e.g., 'Global') is significantly different from another (e.g., 'USA').
-**Null Hypothesis:** There is no statistically significant difference in the mean durationInMillis between songs in the Top 10 and songs in the 50-100 range.
-**Alternative Hypothesis:** A statistically significant difference exists in the mean durationInMillis based on chart position.
+- A **Chi-square test** will be used to see if the genre distribution on one list (e.g., 'Popular') is significantly different from another (e.g., 'Top Rated').
+- **Null Hypothesis:** There is no statistically significant difference in the mean runtime between movies with a high vote_average (e.g., > 8.0) and movies with a moderate vote_average (e.g., 5.0-7.0).
+- **Alternative Hypothesis:** A statistically significant difference exists in the mean runtime based on user rating.
 
-**6-Interpretation and Perspectives:**
+**6. Interpretation and Perspectives:**
 
-The results will be interpreted to determine which metadata features, if any, are most strongly associated with high chart performance.
-The analysis will explore whether 'hit' songs have an 'optimal' duration or are dominated by specific genres.
+- The results will be interpreted to determine which metadata features, if any, are most strongly associated with high popularity or user ratings.
+- The analysis will explore whether 'hit' movies have an 'optimal' runtime or are dominated by specific genres.
 
 #### EXPECTED OUTCOMES
 
-A high-quality, clean dataset of popular songs from Apple Music and their metadata, ready for analysis.
-Statistically-backed findings on the genres that are most correlated with chart success.
-A clear, comparative analysis defining the "typical" metadata profile of a hit song on Apple Music.
-A final report and/or Jupyter Notebook with visualizations (bar charts, histograms, scatter plots) that communicate the project's findings.
-
-
+- A high-quality, clean dataset of popular movies from TMDb and their metadata, ready for analysis.
+- Statistically-backed findings on the genres that are most correlated with high user ratings.
+- A clear, comparative analysis defining the "typical" metadata profile of a successful movie on TMDb.
+- A final report and/or Jupyter Notebook with visualizations (bar charts, histograms, scatter plots) that communicate the project's findings.

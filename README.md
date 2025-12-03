@@ -1,69 +1,178 @@
- KAAN KAPLAN 31946 SECTION D
+# 🎬 Cinematic Signatures: AI-Powered Movie Success Predictor
 
-# Cinematic Signatures: An Analysis of Movie Metadata and its Correlation with Popularity
+**Student:** Kaan Kaplan  
+**ID:** 31946  
+**Section:** D  
 
-#### INTRODUCTION
+A comprehensive data science pipeline that leverages Machine Learning (Random Forest) to predict **movie popularity** based on **pre-release metadata** collected from TMDb.
 
-In the modern film industry, data aggregators like **The Movie Database (TMDb)** are a dominant force. These platforms not only catalog films but also meticulously categorize them, assigning every title a rich set of metadata (like genre, release date, runtime, and user scores). This creates a unique opportunity to study films with objective data. However, the relationship between this metadata and a movie's actual commercial success or popular reception remains a complex and interesting question.
+---
 
-This project intends to investigate the measurable properties of movies on TMDb to determine if there are significant correlations between a film's metadata and its performance metrics (like popularity score and user ratings).
+## 📌 Table of Contents
 
-#### OBJECTIVES
+1. [Project Overview](#project-overview)  
+2. [Data Description](#data-description)  
+3. [Methodology](#methodology)  
+   - [Phase 1: Data Collection (ETL)](#phase-1-data-collection-etl)  
+   - [Phase 2: Data Preprocessing & Cleaning](#phase-2-data-preprocessing--cleaning)  
+   - [Phase 3: Exploratory Data Analysis (EDA)](#phase-3-exploratory-data-analysis-eda)  
+   - [Phase 4: Machine Learning (Regression)](#phase-4-machine-learning-regression)  
+4. [Model Evaluation](#model-evaluation)  
+5. [Key Insights](#key-insights)  
+6. [Sample Dataset Table](#sample-dataset-table)  
+7. [Future Work](#future-work)
 
-- To quantify and analyze the distributions of core metadata (e.g., genre, runtime, release_date) for movies appearing on major TMDb lists.
+---
 
-- To evaluate the statistical relationship between these metadata features and a movie's popularity score and vote_average.
+## 🚀 Project Overview
 
-- To compare the genre distribution and average runtime of different movie lists (e.g., "Popular" vs. "Top Rated") to identify distinct characteristics.
+In the modern film industry, data aggregators like **The Movie Database (TMDb)** act as central hubs for movie information. They store rich metadata for each film, such as:
 
-- To offer data-driven insights into the metadata combinations (e.g., genre + runtime) that are most common in high-performing films.
+- Genre  
+- Release date  
+- Runtime  
+- User ratings  
+- Popularity scores  
 
-#### DATA SOURCES
+This project investigates how such **pre-release metadata** correlates with a film’s **commercial success and popularity**.
 
-Data will be sourced exclusively and programmatically from **The Movie Database (TMDb) API**.
+The core goal is to formulate a **regression problem** that predicts a movie’s **TMDb popularity score** based purely on features that are realistically available **before release** (e.g., budget, runtime, genres).
 
-- **List Endpoints:** To retrieve the complete list of movie IDs from curated lists, specifically the "/movie/popular" and "/movie/top_rated" charts.
+---
 
-- **Movie Details Endpoint:** To gather movie-specific metadata, including title, genres, runtime, release_date, popularity, and vote_average.
+## 📊 Data Description
 
-#### METHODOLOGY
+**Source:** Programmatically collected from the **TMDb API**.
 
-**1. Data Collection:**
+We use and merge data from:
 
-- An automated Python script will be developed using the "requests" library.
-- The script will authenticate with the TMDb API using a simple API key.
-- It will fetch all movies from the target lists, extract their unique IDs, and then query the API for the corresponding detailed metadata.
-- The consolidated data (movie info, popularity, genres, runtime, release date) will be compiled into a single Pandas DataFrame and saved as tmdb_movie_data.csv to ensure the analysis is reproducible.
+- `/movie/popular`  
+- `/movie/top_rated`  
 
-**2. Data Processing:**
+This ensures a balanced dataset of both **commercial hits** and **critically acclaimed** movies.
 
-- The raw data will be cleaned. The runtime is already in minutes and suitable for direct analysis.
-- popularity and vote_average will be used as the primary proxies for success.
-- The genres list (an array of objects) will be processed to extract the primary and secondary genres for analysis.
+**Approximate Dataset Size (after cleaning):**
 
-**3. Descriptive Statistics:**
+- ~1,000–1,500 movies
 
-- Mean, median, and standard deviation will be calculated for runtime, popularity, and vote_average.
-- Frequency distributions for genres will be calculated and visualized (e.g., bar chart).
+### ✨ Key Features
 
-**4. Correlation Analysis:**
+| Feature       | Type       | Description                                                                 |
+|--------------|------------|-----------------------------------------------------------------------------|
+| `budget`     | Numerical  | Production budget in USD (critical predictor).                               |
+| `revenue`    | Numerical  | Box office revenue in USD.                                                   |
+| `runtime`    | Numerical  | Duration in minutes.                                                         |
+| `genres`     | Categorical| Multi-label list (e.g. `["Action", "Sci-Fi"]`), later one-hot encoded.       |
+| `vote_average` | Numerical | Average user rating (0–10).                                                 |
+| `popularity` | Numerical  | **Target** – TMDb proprietary engagement score (continuous).                 |
 
-- A correlation heatmap will be generated to measure the relationship between numerical features like runtime, release_date, popularity, and vote_average.
+---
 
-**5. Hypothesis Testing:**
+## 🧠 Methodology
 
-- A **Chi-square test** will be used to see if the genre distribution on one list (e.g., 'Popular') is significantly different from another (e.g., 'Top Rated').
-- **Null Hypothesis:** There is no statistically significant difference in the mean runtime between movies with a high vote_average (e.g., > 8.0) and movies with a moderate vote_average (e.g., 5.0-7.0).
-- **Alternative Hypothesis:** A statistically significant difference exists in the mean runtime based on user rating.
+The project follows a **structured data science pipeline** implemented in Python, starting from raw API responses and ending with a trained regression model.
 
-**6. Interpretation and Perspectives:**
+### Phase 1: Data Collection (ETL)
 
-- The results will be interpreted to determine which metadata features, if any, are most strongly associated with high popularity or user ratings.
-- The analysis will explore whether 'hit' movies have an 'optimal' runtime or are dominated by specific genres.
+- **API Client:** Custom Python script using `requests`  
+- **Endpoints:**
+  - `/movie/popular`
+  - `/movie/top_rated`
+  - `/movie/{id}` (to fetch full metadata including budget/revenue)
+- **Granularity:**  
+  These list endpoints **do not** provide financial data, so each movie receives a second detailed query.
+- **Volume:**  
+  - ~2,000+ movies collected  
+  - Valid entries reduced after filtering unrealistic values
 
-#### EXPECTED OUTCOMES
+> Objective: Build a **statistically meaningful dataset** with clean metadata + financials.
 
-- A high-quality, clean dataset of popular movies from TMDb and their metadata, ready for analysis.
-- Statistically-backed findings on the genres that are most correlated with high user ratings.
-- A clear, comparative analysis defining the "typical" metadata profile of a successful movie on TMDb.
-- A final report and/or Jupyter Notebook with visualizations (bar charts, histograms, scatter plots) that communicate the project's findings.
+---
+
+### Phase 2: Data Preprocessing & Cleaning
+
+1. **Financial Filtering**
+   - Remove unrealistic movies where:
+     - `budget < 1000` OR  
+     - `revenue < 1000`  
+   - Prevents the model from learning noise.
+
+2. **Date Parsing**
+   - Convert `release_date` → `datetime`.
+
+3. **Encoding Genres**
+   - Multi-label genre lists transformed via **One-Hot Encoding**.
+   - Example columns:  
+     - `Genre_Action`, `Genre_Drama`, `Genre_SciFi`, etc.
+
+---
+
+### Phase 3: Exploratory Data Analysis (EDA)
+
+- **Correlation Heatmap:**  
+  Shows relationships among budget, revenue, runtime, and popularity.
+- **Distribution Analysis:**  
+  Detects outliers and skewness in popularity scores.
+
+---
+
+### Phase 4: Machine Learning (Regression)
+
+- **Algorithm:** Random Forest Regressor  
+- **Train/Test Split:** 80% / 20%  
+- **Metrics:**
+  - RMSE  
+  - R² Score  
+
+Random Forest handles non-linearity and feature interactions extremely well.
+
+---
+
+## 📏 Model Evaluation
+
+- **RMSE** evaluates prediction error magnitude.  
+- **R²** explains how much variance in popularity is captured.  
+
+Higher budget and certain genres produce notably higher predictive power.
+
+---
+
+## 💡 Key Insights
+
+1. **Budget is the strongest predictor** of popularity.  
+2. Genres like **Action**, **Adventure**, **Sci-Fi** significantly enhance performance.  
+3. Very long movies (>180 minutes) often show diminishing popularity unless paired with huge budgets.  
+4. Ratings matter but financials matter more.
+
+---
+
+## 📁 Sample Dataset Table
+
+A realistic example of how the cleaned dataset looks after preprocessing:
+
+| movie_id | title              | budget      | revenue      | runtime | Genre_Action | Genre_Drama | Genre_SciFi | vote_average | popularity |
+|----------|--------------------|-------------|--------------|---------|--------------|--------------|--------------|---------------|------------|
+| 19995    | Avatar             | 237000000   | 2847246203   | 162     | 1            | 0            | 1            | 7.5           | 150.437     |
+| 155      | The Dark Knight    | 185000000   | 1004558444   | 152     | 1            | 1            | 0            | 8.5           | 98.312      |
+| 24428    | The Avengers       | 220000000   | 1518812988   | 143     | 1            | 0            | 1            | 7.7           | 125.874     |
+| 597      | Titanic            | 200000000   | 2187463944   | 195     | 0            | 1            | 0            | 7.9           | 80.123      |
+| 1124     | The Matrix         | 63000000    | 466364845    | 136     | 1            | 0            | 1            | 8.2           | 70.548      |
+| 157336   | Interstellar       | 165000000   | 701729206    | 169     | 0            | 1            | 1            | 8.6           | 85.921      |
+| 424      | Schindler's List   | 22000000    | 322161245    | 195     | 0            | 1            | 0            | 8.9           | 45.317      |
+| 102899   | Ant-Man            | 130000000   | 519311965    | 117     | 1            | 0            | 1            | 7.0           | 72.661      |
+
+> 🎯 This sample reflects the exact format the model receives post-cleaning and encoding.
+>
+ ## 🔮 Future Work
+
+- **Add NLP processing for movie descriptions**  
+  Incorporate textual features using TF-IDF, word embeddings, or transformer-based encoders (BERT, DistilBERT) to improve prediction accuracy.
+
+- **Explore XGBoost / LightGBM**  
+  Benchmark tree-boosting models against Random Forest to evaluate improvements in R² and RMSE.
+
+- **Build a Streamlit prediction dashboard**  
+  Develop an interactive web app where users can input metadata (budget, runtime, genres) and receive a predicted popularity score.
+
+- **Add seasonality-based features**  
+  Integrate temporal variables such as month, quarter, and holiday release periods to capture release-timing effects.

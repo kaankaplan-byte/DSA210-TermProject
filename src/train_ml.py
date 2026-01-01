@@ -15,7 +15,8 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 def eval_model(name, model, X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
     pred = model.predict(X_test)
-    rmse = mean_squared_error(y_test, pred, squared=False)
+    mse = mean_squared_error(y_test, pred)
+    rmse = mse ** 0.5
     mae = mean_absolute_error(y_test, pred)
     r2 = r2_score(y_test, pred)
     return {"model": name, "RMSE": rmse, "MAE": mae, "R2": r2}
